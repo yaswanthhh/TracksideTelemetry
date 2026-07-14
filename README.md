@@ -1,5 +1,5 @@
 # TracksideTelemetry
-##[Live Demo](https://tracksidetelemetry.streamlit.app)
+## [Live Demo](https://tracksidetelemetry.streamlit.app)
 A Streamlit dashboard for analysing MotoGP 18 telemetry data. It provides lap viewing, lap comparison, editable track zones, telemetry-based findings, and CSV exports.
 
 > This is a simulator-data analysis project. It does not control a motorcycle ECU and does not provide real-world riding advice.
