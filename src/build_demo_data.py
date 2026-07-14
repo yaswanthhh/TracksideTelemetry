@@ -15,7 +15,6 @@ def main() -> None:
 
     demo_laps = (
         laps.loc[laps["is_usable_lap"]]
-        .sort_values("max_lap_time_s")
         .head(DEMO_LAP_COUNT)
         .copy()
     )
