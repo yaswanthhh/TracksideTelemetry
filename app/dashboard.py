@@ -9,8 +9,15 @@ from plotly.subplots import make_subplots
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
-LAPS_PATH = PROJECT_ROOT / "data/processed/laps_summary.csv"
-TELEMETRY_PATH = PROJECT_ROOT / "data/processed/telemetry_curated.parquet"
+LOCAL_LAPS_PATH = PROJECT_ROOT / "data/processed/laps_summary.csv"
+LOCAL_TELEMETRY_PATH = (
+    PROJECT_ROOT / "data/processed/telemetry_curated.parquet"
+)
+
+DEMO_LAPS_PATH = PROJECT_ROOT / "data/demo/laps_summary_demo.csv"
+DEMO_TELEMETRY_PATH = (
+    PROJECT_ROOT / "data/demo/telemetry_curated_demo.parquet"
+)
 
 TRACK_ID = "Sachsenring"
 TRACK_LENGTH_M = 3667.63
@@ -36,9 +43,29 @@ st.warning(
 
 
 @st.cache_data
-def load_data() -> tuple[pd.DataFrame, pd.DataFrame]:
-    laps = pd.read_csv(LAPS_PATH)
-    telemetry = pd.read_parquet(TELEMETRY_PATH)
+def load_data() -> tuple[pd.DataFrame, pd.DataFrame, str]:
+    if (
+        LOCAL_LAPS_PATH.is_file()
+        and LOCAL_TELEMETRY_PATH.is_file()
+    ):
+        laps_path = LOCAL_LAPS_PATH
+        telemetry_path = LOCAL_TELEMETRY_PATH
+        data_mode = "Full local telemetry dataset"
+    elif (
+        DEMO_LAPS_PATH.is_file()
+        and DEMO_TELEMETRY_PATH.is_file()
+    ):
+        laps_path = DEMO_LAPS_PATH
+        telemetry_path = DEMO_TELEMETRY_PATH
+        data_mode = "Public demo dataset: five fastest usable laps"
+    else:
+        raise FileNotFoundError(
+            "No telemetry dataset was found. Expected either local processed "
+            "data or the public demo dataset."
+        )
+
+    laps = pd.read_csv(laps_path)
+    telemetry = pd.read_parquet(telemetry_path)
 
     usable_laps = laps.loc[laps["is_usable_lap"]].copy()
     usable_laps = usable_laps.sort_values(
@@ -51,7 +78,7 @@ def load_data() -> tuple[pd.DataFrame, pd.DataFrame]:
         + telemetry["velocity_Z"] ** 2
     )
 
-    return usable_laps, telemetry
+    return usable_laps, telemetry, data_mode
 
 
 def initialise_zone_state() -> None:
@@ -487,7 +514,8 @@ def build_zone_export(
 def main() -> None:
     initialise_zone_state()
 
-    laps, telemetry = load_data()
+    laps, telemetry, data_mode = load_data()
+    st.info(data_mode)
 
     reference_lap = laps.iloc[0]
     reference_lap_id = reference_lap["lap_id"]
