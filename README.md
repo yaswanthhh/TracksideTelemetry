@@ -1,2 +1,9 @@
-# TracksideTelemetry
-An edge-to-dashboard telemetry platform using MotoGP 18 data, validating time-series signals, detecting synthetic telemetry faults, and classifying rear-traction-risk events with explainable machine-learning models.
+# TracksideTelemtry
+
+A MotoGP 18 telemetry analytics and simulated calibration-workflow prototype.
+
+## Scope
+
+This project processes MotoGP 18 simulator telemetry to support lap comparison, derived telemetry channels, traction-event analysis, anomaly detection, and simulated configuration-change tracking.
+
+> Simulator-data research project only. It does not control a motorcycle ECU or provide real-world racing or safety recommendations.
